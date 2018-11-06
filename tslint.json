@@ -17,7 +17,7 @@
     "no-console": false,
     "jsx-wrap-multiline": true,
     "jsx-space-before-trailing-slash": true,
-    "semicolon": [true, "always"]
+    "semicolon": [true, "never"]
   },
   "linterOptions": {
     "exclude": [

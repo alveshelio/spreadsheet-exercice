@@ -3,8 +3,9 @@ module.exports = () => ({
     rules: [
       {
         test: /\.ts|\.tsx$/,
-        use: 'ts-loader',
+        loaders : ['babel-loader', 'awesome-typescript-loader'],
         exclude: /node_modules/,
+
       },
     ],
   },
