@@ -36,7 +36,7 @@ module.exports = ({ mode, presets } = { mode: 'production', presets: [] }) => we
       ],
     },
     plugins: [new HtmlWebpackPlugin({
-      title: 'My awesome boilerplate',
+      title: 'Spreadsheet',
       template: './public/index.html',
       filename: './index.html'
     }), new webpack.ProgressPlugin()]
