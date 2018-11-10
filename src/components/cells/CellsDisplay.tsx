@@ -2,23 +2,21 @@ import * as React from "react"
 
 import styled from "../../templages/styled"
 import CellItem from "./CellItem"
+import { Cell } from "../../types/spreadsheet"
 
-interface OwnProps {
-  columns: number
-  rows: number
-}
-
-interface Cell {
-  x: number
-  y: number
-  value: any
-}
-
-interface OwnState {
+interface StateToProps {
+  numberOfColumns: number
+  numberOfRows: number
   cells: Cell[]
 }
 
-const CellsWrapper = styled.div<OwnProps>`
+interface DispatchToProps {
+  selectCell: () => React.MouseEvent<HTMLInputElement>
+}
+
+type CellsContainerProps = StateToProps & DispatchToProps
+
+const CellsWrapper = styled.div<{ columns: number }>`
   display: grid;
   grid-template-columns: repeat(${({ columns }) => columns}, 100px);
   grid-auto-rows: 30px;
@@ -29,36 +27,14 @@ const CellsWrapper = styled.div<OwnProps>`
   max-height: calc(100vh - 60px);
 `
 
-class CellsContainer extends React.PureComponent<OwnProps, OwnState> {
-  state: OwnState = {
-    cells: [],
-  }
-
-  buildCells = (columns: number, rows: number) => {
-    const cells = []
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < columns; c++) {
-        cells.push({ x: c, y: r, value: "" })
-      }
-    }
-    this.setState({ cells })
-  }
-
-  onCellClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log("cell", e.target)
-  }
-
-  componentDidMount() {
-    this.buildCells(this.props.columns, this.props.rows)
-  }
-
+class CellsContainer extends React.PureComponent<CellsContainerProps> {
   render() {
-    const { cells } = this.state
+    const { numberOfColumns, cells } = this.props
     return (
-      <CellsWrapper columns={this.props.columns} rows={this.props.rows}>
-        {cells.map((cell: Cell) => (
-          <CellItem key={`${cell.y}-${cell.x}`} onClick={this.onCellClick}>
-            {cell.value}
+      <CellsWrapper columns={numberOfColumns}>
+        {cells.map(({ col, row, value }: Cell) => (
+          <CellItem key={`${row}-${col}`} col={col} row={row} value={value}>
+            {value}
           </CellItem>
         ))}
       </CellsWrapper>

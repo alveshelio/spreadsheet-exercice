@@ -7,7 +7,7 @@ const modeConfig = env => require(`./build-utils/webpack.${env}`)(env);
 
 module.exports = ({ mode, presets } = { mode: 'production', presets: [] }) => webpackMerge(
   {
-    entry: './src/index.tsx',
+    entry: ['@babel/polyfill', './src/index.tsx'],
     mode,
     output: {
       filename: 'bundle.js',
