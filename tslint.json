@@ -9,7 +9,7 @@
     "jsx-curly-spacing": "always",
     "jsx-equals-spacing": "always",
     "jsx-no-bind": true,
-    "jsx-no-lambda": true,
+    "jsx-no-lambda": false,
     "jsx-self-close": true,
     "object-literal-sort-keys": false,
     "ordered-imports": false,

@@ -17,16 +17,23 @@ const SpreadSheetPage = styled.div`
 interface StateToProps {
   numberOfColumns: number
   numberOfRows: number
+  selectedCells: number[]
 }
 
 interface DispatchToProps {
   buildColumns: () => void
+  deleteMultipleCellsValue: (selectedCells: number[]) => void
 }
 
 type SpreadsheetProps = StateToProps & DispatchToProps
 
 export default class SpreadSheet extends React.Component<SpreadsheetProps> {
   componentDidMount() {
+    document.addEventListener("keydown", (e: any) => {
+      if (e.shiftKey && e.keyCode === 8) {
+        this.props.deleteMultipleCellsValue(this.props.selectedCells)
+      }
+    })
     this.props.buildColumns()
   }
 

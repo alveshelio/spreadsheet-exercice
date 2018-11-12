@@ -1,16 +1,30 @@
 import { connect } from "react-redux"
 
 import InputDisplay from "./InputDisplay"
-import { StoreState } from "../../types/spreadsheet"
+import { Cell, StoreState } from "../../types/spreadsheet"
 import { getColumnNames, getNumberOfRows } from "../../selectors/spreadsheet"
+import { Dispatch } from "redux"
+import { SpreadsheetActions } from "../../actions/spreadsheetActions"
 
-const mapStateToProps = (state: StoreState, { col, row }: { col: string; row: number }) => ({
+const mapStateToProps = (state: StoreState, ownProps: Cell) => ({
   columnNames: getColumnNames(state),
   numberOfRows: getNumberOfRows(state),
-  col,
-  row,
+  cellIndex: ownProps.cellIndex,
+  value: ownProps.value,
 })
 
-const InputContainer = connect(mapStateToProps)(InputDisplay)
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setCellValue(cell: Cell) {
+    dispatch(SpreadsheetActions.setCellValue(cell))
+  },
+  fetchWeather(city: string) {
+    dispatch(SpreadsheetActions.fetchWeather(city))
+  },
+})
+
+const InputContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InputDisplay)
 
 export default InputContainer

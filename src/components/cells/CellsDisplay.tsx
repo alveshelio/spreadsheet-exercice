@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import styled from "../../templages/styled"
-import CellItem from "./CellItem"
+import CellItemContainer from "./CellItemContainer"
 import { Cell } from "../../types/spreadsheet"
 
 interface StateToProps {
@@ -10,11 +10,11 @@ interface StateToProps {
   cells: Cell[]
 }
 
-interface DispatchToProps {
-  selectCell: () => React.MouseEvent<HTMLInputElement>
+interface CellsContainerState {
+  selected: boolean
 }
 
-type CellsContainerProps = StateToProps & DispatchToProps
+type CellsContainerProps = StateToProps
 
 const CellsWrapper = styled.div<{ columns: number }>`
   display: grid;
@@ -27,15 +27,15 @@ const CellsWrapper = styled.div<{ columns: number }>`
   max-height: calc(100vh - 60px);
 `
 
-class CellsContainer extends React.PureComponent<CellsContainerProps> {
+class CellsContainer extends React.PureComponent<CellsContainerProps, CellsContainerState> {
   render() {
     const { numberOfColumns, cells } = this.props
     return (
       <CellsWrapper columns={numberOfColumns}>
-        {cells.map(({ col, row, value }: Cell) => (
-          <CellItem key={`${row}-${col}`} col={col} row={row} value={value}>
+        {cells.map(({ cellIndex, value }: Cell) => (
+          <CellItemContainer key={cellIndex} cellIndex={cellIndex} value={value}>
             {value}
-          </CellItem>
+          </CellItemContainer>
         ))}
       </CellsWrapper>
     )

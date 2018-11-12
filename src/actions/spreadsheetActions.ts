@@ -3,13 +3,14 @@ import {
   BuildCells,
   BuildColumns,
   Cell,
-  HandleCellUpdate,
-  SelectCell,
+  DeleteMultipleCellsValue,
+  FetchWeather,
+  SelectMultipleCells,
   SetCells,
   SetCellValue,
   SetColumns,
+  SetMultipleCellsValue,
 } from "../types/spreadsheet"
-import { getCellValue } from "../selectors/spreadsheet"
 
 const buildColumns = (numberOfColumns: number): BuildColumns => ({
   type: SpreadSheetTypes.BUILD_COLUMNS,
@@ -21,15 +22,10 @@ const setColumns = (columnNames: string[]): SetColumns => ({
   columnNames,
 })
 
-const buildCells = (
-  numberOfColumns: number,
-  numberOfRows: number,
-  columnNames: string[]
-): BuildCells => ({
+const buildCells = (numberOfColumns: number, numberOfRows: number): BuildCells => ({
   type: SpreadSheetTypes.BUILD_CELLS,
   numberOfColumns,
   numberOfRows,
-  columnNames,
 })
 
 const setCells = (cells: Cell[]): SetCells => ({
@@ -37,21 +33,38 @@ const setCells = (cells: Cell[]): SetCells => ({
   cells,
 })
 
-const handleCellUpdate = (col: string, row: number): HandleCellUpdate => ({
-  type: SpreadSheetTypes.HANDLE_CELL_UPDATE,
-  col,
-  row,
-})
-
-const setCellValue = (col: string, row: number, value: string): SetCellValue => ({
+const setCellValue = (cell: Cell): SetCellValue => ({
   type: SpreadSheetTypes.SET_CELL_VALUE,
-  col,
-  row,
-  value,
+  cell,
 })
 
-const selectCell = (): SelectCell => ({
-  type: SpreadSheetTypes.SELECT_CELL,
+const setMultipleCellsValue = (cells: Cell[]): SetMultipleCellsValue => ({
+  type: SpreadSheetTypes.SET_MULTIPLE_CELLS,
+  cells,
+})
+
+const selectMultipleCells = (
+  firstCellIndex: number,
+  lastCellIndex: number
+): SelectMultipleCells => ({
+  type: SpreadSheetTypes.SELECT_MULTIPLE_CELLS,
+  firstCellIndex,
+  lastCellIndex,
+})
+
+const setSelectedCells = (selectedCells: number[]) => ({
+  type: SpreadSheetTypes.SET_SELECTED_CELLS,
+  selectedCells,
+})
+
+const deleteMultipleCellsValue = (selectedCells: number[]): DeleteMultipleCellsValue => ({
+  type: SpreadSheetTypes.DELETE_MULTIPLE_CELLS_VALUE,
+  selectedCells,
+})
+
+const fetchWeather = (city: string): FetchWeather => ({
+  type: SpreadSheetTypes.FETCH_WEATHER,
+  city,
 })
 
 const buildColumnNamesHandler = (numberOfColumns: number = 50) => {
@@ -106,15 +119,13 @@ const buildColumnNamesHandler = (numberOfColumns: number = 50) => {
   return rowNames
 }
 
-export const buildCellsHandler = (
-  numberOfColumns: number,
-  numberOfRows: number,
-  columnNames: string[]
-): Cell[] => {
+export const buildCellsHandler = (numberOfColumns: number, numberOfRows: number): Cell[] => {
   const cells: Cell[] = []
+  let cellIndex = 0
   for (let row = 1; row <= numberOfRows; row++) {
-    for (const columnName of columnNames) {
-      cells.push({ col: columnName, row, value: "" })
+    for (let col = 0; col < numberOfColumns; col++) {
+      cells.push({ cellIndex, value: "" })
+      cellIndex++
     }
   }
   return cells
@@ -128,22 +139,6 @@ const buildRowsHandler = (numberOfRows: number) => {
   return rowNames
 }
 
-const isValidCell = (
-  columns: string[],
-  numberOfRows: number,
-  value: string,
-  col: string,
-  row: number
-) => {
-  const valueChars = value.split("")
-  if (valueChars[0] === "=") {
-    const numberVal = value.match(/\d/g)
-    const colName = value.match(/[A-Za-z]/g).join()
-    const rowNumber = parseInt(numberVal.join(""), 10)
-    return rowNumber >= 0 && rowNumber <= numberOfRows && columns.includes(colName as string)
-  }
-}
-
 export const SpreadsheetActions = {
   buildColumns,
   setColumns,
@@ -151,9 +146,11 @@ export const SpreadsheetActions = {
   buildCells,
   setCells,
   buildCellsHandler,
-  selectCell,
-  handleCellUpdate,
+  selectMultipleCells,
+  setSelectedCells,
   setCellValue,
+  setMultipleCellsValue,
   buildRowsHandler,
-  isValidCell,
+  fetchWeather,
+  deleteMultipleCellsValue,
 }

@@ -1,15 +1,14 @@
 import { SpreadSheetTypes } from "../constants/spreadsheet"
 
 export interface Cell {
-  col: string
-  row: number
+  cellIndex: number
   value: string
 }
 
 export interface SpreadSheet {
   numberOfColumns: number
   numberOfRows: number
-  selectedCells: Cell[]
+  selectedCells: number[]
   cells: Cell[]
   columnNames: string[]
 }
@@ -32,7 +31,6 @@ export interface BuildCells {
   type: SpreadSheetTypes.BUILD_CELLS
   numberOfColumns: number
   numberOfRows: number
-  columnNames: string[]
 }
 
 export interface SetCells {
@@ -40,21 +38,35 @@ export interface SetCells {
   cells: Cell[]
 }
 
-export interface SelectCell {
-  type: SpreadSheetTypes.SELECT_CELL
+export interface SelectMultipleCells {
+  type: SpreadSheetTypes.SELECT_MULTIPLE_CELLS
+  firstCellIndex: number
+  lastCellIndex: number
+}
+
+export interface SetSelectedCells {
+  type: SpreadSheetTypes.SET_SELECTED_CELLS
+  selectedCells: number[]
 }
 
 export interface SetCellValue {
   type: SpreadSheetTypes.SET_CELL_VALUE
-  col: string
-  row: number
-  value: string
+  cell: Cell
 }
 
-export interface HandleCellUpdate {
-  type: SpreadSheetTypes.HANDLE_CELL_UPDATE
-  col: string
-  row: number
+export interface SetMultipleCellsValue {
+  type: SpreadSheetTypes.SET_MULTIPLE_CELLS
+  cells: Cell[]
+}
+
+export interface DeleteMultipleCellsValue {
+  type: SpreadSheetTypes.DELETE_MULTIPLE_CELLS_VALUE
+  selectedCells: number[]
+}
+
+export interface FetchWeather {
+  type: SpreadSheetTypes.FETCH_WEATHER
+  city: string
 }
 
 export type SpreadsheetAllowedActions =
@@ -62,6 +74,7 @@ export type SpreadsheetAllowedActions =
   | SetColumns
   | BuildCells
   | SetCells
-  | SelectCell
+  | SetMultipleCellsValue
+  | SelectMultipleCells
+  | SetSelectedCells
   | SetCellValue
-  | HandleCellUpdate

@@ -1,41 +1,99 @@
-import { takeEvery, put, fork, all, call, select } from "redux-saga/effects"
+import { takeEvery, put, fork, all, call, select, takeLatest } from "redux-saga/effects"
 import { SpreadSheetTypes } from "../constants/spreadsheet"
-import { BuildCells, Cell, HandleCellUpdate, SetCellValue } from "../types/spreadsheet"
+import {
+  BuildCells,
+  Cell,
+  DeleteMultipleCellsValue,
+  FetchWeather,
+  SelectMultipleCells,
+  SetCellValue,
+} from "../types/spreadsheet"
 import { SpreadsheetActions } from "../actions/spreadsheetActions"
-import { getColumnNames, getNumberOfColumns, getNumberOfRows } from "../selectors/spreadsheet"
+import { getColumnNames, getNumberOfRows } from "../selectors/spreadsheet"
+import { fetchWeatherByCity } from "../api/weather"
 
-// worker
+/***************************************************************************************************
+ *                                           Workers                                                *
+ ***************************************************************************************************/
+
+function* fetchWeatherWorker(action: FetchWeather) {
+  if (action.city) {
+    try {
+      const temperature = yield call(fetchWeatherByCity, action.city)
+      const celsiusTemp = (temperature.main.temp - 273.15).toFixed(2).toString()
+      yield put(SpreadsheetActions.setCellValue({ cellIndex: 0, value: `${celsiusTemp}º` }))
+    } catch {
+      console.log("unable to fetch temperature")
+    }
+  }
+}
+
 function* buildCellsWorker(action: BuildCells) {
   const cells = yield call(
     SpreadsheetActions.buildCellsHandler,
     action.numberOfColumns,
-    action.numberOfRows,
-    action.columnNames
+    action.numberOfRows
   )
   yield put(SpreadsheetActions.setCells(cells))
+  yield put(SpreadsheetActions.setCellValue({ cellIndex: 1, value: "Montreal" }))
+  yield put(SpreadsheetActions.fetchWeather("Montreal"))
 }
 
-// Worker
 function* setCellValueWorker(action: SetCellValue) {
-  yield console.warn("will update cell value", action)
-  const numberOfRows = yield select(getNumberOfRows)
-  const columns = yield select(getColumnNames)
-  if (SpreadsheetActions.isValidCell(columns, numberOfRows, action.value, action.col, action.row)) {
-    yield console.warn("will update cell")
-  }
-  yield put(SpreadsheetActions.setCellValue(action.col, action.row, action.value))
+  yield put(
+    SpreadsheetActions.setCellValue({ cellIndex: action.cell.cellIndex, value: action.cell.value })
+  )
 }
 
-// Watcher
+function* selectMultipleCellsWorker(action: SelectMultipleCells) {
+  const selectedCells = []
+  if (action.firstCellIndex < action.lastCellIndex) {
+    for (let i = action.firstCellIndex; i <= action.lastCellIndex; i++) {
+      selectedCells.push(i)
+    }
+  } else {
+    for (let i = action.lastCellIndex; i <= action.firstCellIndex; i++) {
+      selectedCells.push(i)
+    }
+  }
+  yield put(SpreadsheetActions.setSelectedCells(selectedCells))
+}
+
+function* deleteMultipleCellsWorker(action: DeleteMultipleCellsValue) {
+  const cells: Cell[] = action.selectedCells.map(cell => ({ cellIndex: cell, value: "" }))
+  yield put(SpreadsheetActions.setMultipleCellsValue(cells))
+}
+
+/***************************************************************************************************
+ *                                           Watchers                                               *
+ ***************************************************************************************************/
+
 function* buildCellsWatcher() {
   yield takeEvery(SpreadSheetTypes.BUILD_CELLS, buildCellsWorker)
 }
 
-// Watcher
 function* setCellValueWatcher() {
   yield takeEvery(SpreadSheetTypes.HANDLE_CELL_UPDATE, setCellValueWorker)
 }
 
+function* selectMultipleCellsWatcher() {
+  yield takeEvery(SpreadSheetTypes.SELECT_MULTIPLE_CELLS, selectMultipleCellsWorker)
+}
+
+function* fetchWeatherWatcher() {
+  yield takeLatest(SpreadSheetTypes.FETCH_WEATHER, fetchWeatherWorker)
+}
+
+function* deleteMultipleCellsWatcher() {
+  yield takeEvery(SpreadSheetTypes.DELETE_MULTIPLE_CELLS_VALUE, deleteMultipleCellsWorker)
+}
+
 export default function* rootCellsSaga() {
-  yield all([fork(buildCellsWatcher), fork(setCellValueWatcher)])
+  yield all([
+    fork(buildCellsWatcher),
+    fork(setCellValueWatcher),
+    fork(selectMultipleCellsWatcher),
+    fork(fetchWeatherWatcher),
+    fork(deleteMultipleCellsWatcher),
+  ])
 }

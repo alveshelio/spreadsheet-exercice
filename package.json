@@ -75,6 +75,7 @@
     "@types/webpack": "^4.4.17",
     "@types/webpack-env": "^1.13.6",
     "antd": "^3.10.4",
+    "axios": "^0.18.0",
     "emotion": "^9.2.12",
     "emotion-theming": "^9.2.9",
     "react": "^16.6.0",

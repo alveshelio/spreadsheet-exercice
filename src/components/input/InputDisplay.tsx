@@ -2,6 +2,7 @@ import * as React from "react"
 
 import styled from "../../templages/styled"
 import { SpreadsheetActions } from "../../actions/spreadsheetActions"
+import { Cell } from "../../types/spreadsheet"
 
 const StyledInput = styled.input`
   border: none;
@@ -9,6 +10,9 @@ const StyledInput = styled.input`
   background: ${({ theme }) => theme.bgColor};
   line-height: 25px;
   font-size: 20px;
+  &:focus {
+    outline-width: 0;
+  }
 `
 
 interface StateToProps {
@@ -16,19 +20,34 @@ interface StateToProps {
   numberOfRows: number
 }
 
+interface DispatchToProps {
+  setCellValue: (cell: Cell) => void
+  fetchWeather: (city: string) => void
+}
+
 interface OwnProps {
-  col: string
-  row: number
+  cellIndex: number
+  value: string
 }
 
 interface OwnState {
   value: any
 }
 
-type InputProps = StateToProps & OwnProps
+type InputProps = StateToProps & DispatchToProps & OwnProps
 class Input extends React.Component<InputProps, OwnState> {
   state = {
     value: "",
+  }
+
+  componentDidMount() {
+    this.setState(() => ({ value: this.props.value }))
+  }
+
+  componentWillReceiveProps(nextProps: OwnProps) {
+    if (this.props.value !== nextProps.value) {
+      this.setState(() => ({ value: nextProps.value }))
+    }
   }
 
   onChangeHandler = (e: any) => {
@@ -38,40 +57,24 @@ class Input extends React.Component<InputProps, OwnState> {
 
   onKeyPressHandler = (e: any) => {
     const { value } = e.target
-    const { col, row } = e.target.dataset
-    if (e.key === "Enter") {
-      SpreadsheetActions.isValidCell(
-        this.props.columnNames,
-        this.props.numberOfRows,
-        value,
-        col,
-        row
-      )
+    if (e.key === "Enter" && value !== "") {
+      this.props.setCellValue({ cellIndex: this.props.cellIndex, value })
+      if (this.props.cellIndex === 1 && value !== "") {
+        this.props.fetchWeather(value)
+      }
     }
   }
 
-  onClickHandler = (e: any) => {
-    console.log("clicked in input col", e.target.dataset.col)
-    console.log("clicked in input row", e.target.dataset.row)
-  }
-
-  onBlurHandler = (e: any) => {
-    console.log("clicked in input col", e.target.dataset.col)
-  }
-
   render() {
-    const { col, row } = this.props
+    const { cellIndex } = this.props
     const { value } = this.state
 
     return (
       <StyledInput
         type="text"
         value={value}
-        data-col={col}
-        data-row={row}
+        data-cell-index={cellIndex}
         onChange={this.onChangeHandler}
-        onClick={this.onClickHandler}
-        onBlur={this.onBlurHandler}
         onKeyPress={this.onKeyPressHandler}
       />
     )

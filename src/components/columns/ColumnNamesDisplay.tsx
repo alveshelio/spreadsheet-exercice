@@ -11,9 +11,9 @@ type ColumnsProps = StateToProps & {}
 
 const Columns: React.SFC<ColumnsProps> = ({ columnNames }) => (
   <ColumnsHeader columns={columnNames.length}>
-    {columnNames.map((row: string, index: number) => {
-      return <ColumnItem key={index}>{row}</ColumnItem>
-    })}
+    {columnNames.map((row: string, index: number) => (
+      <ColumnItem key={index}>{row}</ColumnItem>
+    ))}
   </ColumnsHeader>
 )
 

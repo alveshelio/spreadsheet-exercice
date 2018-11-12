@@ -19,7 +19,6 @@ class RowsContainer extends React.PureComponent<OwnProps, OwnState> {
 
   componentDidMount() {
     const rowNames = SpreadsheetActions.buildRowsHandler(this.props.numberOfRows)
-    console.warn("rowNames", rowNames)
     this.setState({ rowNames })
   }
 

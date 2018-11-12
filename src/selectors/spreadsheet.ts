@@ -8,6 +8,7 @@ export const getColumnNames = (state: StoreState): string[] => state.spreadsheet
 
 export const getCellsFromState = (state: StoreState): Cell[] => state.spreadsheet.cells
 
-export const getCellValue = (state: StoreState, col: string, row: number) => {
-  state.spreadsheet.cells.filter(cell => cell.col === col && cell.row === row)
-}
+export const getCellValue = (state: StoreState, cellIndex: number): Cell[] =>
+  state.spreadsheet.cells.filter((cell: Cell) => cell.cellIndex === cellIndex)
+
+export const getSelectedCells = (state: StoreState): number[] => state.spreadsheet.selectedCells

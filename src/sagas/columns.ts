@@ -9,7 +9,7 @@ function* buildColumnsHeader() {
   const numberOfRows = yield select(getNumberOfRows)
   const columnNames = yield call(SpreadsheetActions.buildColumnNamesHandler, numberOfColumns)
   yield put(SpreadsheetActions.setColumns(columnNames))
-  yield put(SpreadsheetActions.buildCells(numberOfColumns, numberOfRows, columnNames))
+  yield put(SpreadsheetActions.buildCells(numberOfColumns, numberOfRows))
 }
 
 // watcher
