@@ -4,7 +4,7 @@ const storeInitialState: StoreState = {
   spreadsheet: {
     columnNames: [],
     numberOfColumns: 50,
-    numberOfRows: 25,
+    numberOfRows: 50,
     selectedCells: [],
     cells: [],
   },
