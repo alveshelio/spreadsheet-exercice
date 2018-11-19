@@ -1,20 +1,34 @@
 import { connect } from "react-redux"
 import { Dispatch } from "redux"
-import { StoreState } from "../../types/spreadsheet"
+import { Cell, StoreState } from "../../types/spreadsheet"
 import { SpreadsheetActions } from "../../actions/spreadsheetActions"
 import CellItemDisplay from "./CellItemDisplay"
-import { getSelectedCells } from "../../selectors/spreadsheet"
 
 const mapStateToProps = (state: StoreState) => ({
-  selectedCells: getSelectedCells(state),
+  selectedCells: state.spreadsheet.selectedCells,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setSelectedCells(selectedCells: number[]) {
+  setSelectedCells(selectedCells: Cell[]) {
     dispatch(SpreadsheetActions.setSelectedCells(selectedCells))
   },
-  selectMultipleCells(firstCellIndex: number, lastCellIndex: number) {
-    dispatch(SpreadsheetActions.selectMultipleCells(firstCellIndex, lastCellIndex))
+  setCellValue(cell: Cell) {
+    dispatch(SpreadsheetActions.setCellValue(cell))
+  },
+  selectMultipleCells(
+    firstRowIndex: number,
+    firstCellIndex: number,
+    lastRowIndex: number,
+    lastCellIndex: number
+  ) {
+    dispatch(
+      SpreadsheetActions.selectMultipleCells(
+        firstRowIndex,
+        firstCellIndex,
+        lastRowIndex,
+        lastCellIndex
+      )
+    )
   },
 })
 

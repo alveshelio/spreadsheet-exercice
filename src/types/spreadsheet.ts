@@ -2,14 +2,21 @@ import { SpreadSheetTypes } from "../constants/spreadsheet"
 
 export interface Cell {
   cellIndex: number
+  rowIndex: number
   value: string
+  selected: boolean
+}
+
+export interface Row {
+  rowIndex: string
+  cells: Cell[]
 }
 
 export interface SpreadSheet {
   numberOfColumns: number
   numberOfRows: number
-  selectedCells: number[]
-  cells: Cell[]
+  selectedCells: Cell[]
+  rows: Row | null
   columnNames: string[]
 }
 
@@ -33,20 +40,22 @@ export interface BuildCells {
   numberOfRows: number
 }
 
-export interface SetCells {
-  type: SpreadSheetTypes.SET_CELLS
-  cells: Cell[]
+export interface SetRows {
+  type: SpreadSheetTypes.SET_ROWS
+  rows: Row[]
 }
 
 export interface SelectMultipleCells {
   type: SpreadSheetTypes.SELECT_MULTIPLE_CELLS
+  firstRowIndex: number
   firstCellIndex: number
+  lastRowIndex: number
   lastCellIndex: number
 }
 
 export interface SetSelectedCells {
   type: SpreadSheetTypes.SET_SELECTED_CELLS
-  selectedCells: number[]
+  selectedCells: Cell[]
 }
 
 export interface SetCellValue {
@@ -61,7 +70,7 @@ export interface SetMultipleCellsValue {
 
 export interface DeleteMultipleCellsValue {
   type: SpreadSheetTypes.DELETE_MULTIPLE_CELLS_VALUE
-  selectedCells: number[]
+  selectedCells: Cell[]
 }
 
 export interface FetchWeather {
@@ -73,7 +82,7 @@ export type SpreadsheetAllowedActions =
   | BuildColumns
   | SetColumns
   | BuildCells
-  | SetCells
+  | SetRows
   | SetMultipleCellsValue
   | SelectMultipleCells
   | SetSelectedCells

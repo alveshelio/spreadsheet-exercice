@@ -2,13 +2,12 @@ import { connect } from "react-redux"
 
 import InputDisplay from "./InputDisplay"
 import { Cell, StoreState } from "../../types/spreadsheet"
-import { getColumnNames, getNumberOfRows } from "../../selectors/spreadsheet"
 import { Dispatch } from "redux"
 import { SpreadsheetActions } from "../../actions/spreadsheetActions"
 
 const mapStateToProps = (state: StoreState, ownProps: Cell) => ({
-  columnNames: getColumnNames(state),
-  numberOfRows: getNumberOfRows(state),
+  columnNames: state.spreadsheet.columnNames,
+  numberOfRows: state.spreadsheet.numberOfRows,
   cellIndex: ownProps.cellIndex,
   value: ownProps.value,
 })

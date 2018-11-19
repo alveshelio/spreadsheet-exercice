@@ -6,6 +6,7 @@ import ColumnNamesContainer from "../components/columns/ColumnNamesContainer"
 import RowNamesDisplay from "../components/rows/RowNumbersDisplay"
 import CellsContainer from "../components/cells/CellsContainer"
 import ContentDisplay from "../components/content/ContentDisplay"
+import { Cell } from "../types/spreadsheet"
 
 const SpreadSheetPage = styled.div`
   display: grid;
@@ -17,12 +18,12 @@ const SpreadSheetPage = styled.div`
 interface StateToProps {
   numberOfColumns: number
   numberOfRows: number
-  selectedCells: number[]
+  selectedCells: Cell[]
 }
 
 interface DispatchToProps {
   buildColumns: () => void
-  deleteMultipleCellsValue: (selectedCells: number[]) => void
+  deleteMultipleCellsValue: (selectedCells: Cell[]) => void
 }
 
 type SpreadsheetProps = StateToProps & DispatchToProps

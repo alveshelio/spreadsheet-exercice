@@ -6,7 +6,7 @@ const storeInitialState: StoreState = {
     numberOfColumns: 50,
     numberOfRows: 50,
     selectedCells: [],
-    cells: [],
+    rows: null,
   },
 }
 

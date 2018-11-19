@@ -4,15 +4,16 @@ import createSagaMiddleware from "redux-saga"
 import DevTools from "./DevTools"
 import rootReducer from "../reducers"
 import rootSaga from "../sagas"
+import { StoreState } from "../types/spreadsheet"
 
-export default (initialState: any) => {
+export default (initialState: StoreState) => {
   const sagaMiddleware = createSagaMiddleware()
 
   const store = createStore(
     rootReducer,
     initialState,
     compose(
-      applyMiddleware(sagaMiddleware, logger),
+      applyMiddleware(sagaMiddleware),
       DevTools.instrument()
     )
   )

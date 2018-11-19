@@ -26,6 +26,7 @@ interface DispatchToProps {
 }
 
 interface OwnProps {
+  rowIndex: number
   cellIndex: number
   value: string
 }
@@ -58,22 +59,25 @@ class Input extends React.Component<InputProps, OwnState> {
   onKeyPressHandler = (e: any) => {
     const { value } = e.target
     if (e.key === "Enter" && value !== "") {
-      this.props.setCellValue({ cellIndex: this.props.cellIndex, value })
-      if (this.props.cellIndex === 1 && value !== "") {
+      this.props.setCellValue({
+        rowIndex: this.props.rowIndex,
+        cellIndex: this.props.cellIndex,
+        value,
+        selected: true,
+      })
+      if (this.props.cellIndex === 1 && this.props.rowIndex === 1 && value !== "") {
         this.props.fetchWeather(value)
       }
     }
   }
 
   render() {
-    const { cellIndex } = this.props
     const { value } = this.state
 
     return (
       <StyledInput
         type="text"
         value={value}
-        data-cell-index={cellIndex}
         onChange={this.onChangeHandler}
         onKeyPress={this.onKeyPressHandler}
       />

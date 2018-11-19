@@ -3,20 +3,19 @@ import { Dispatch } from "redux"
 
 import SpreadsheetDisplay from "./SpreadsheetDisplay"
 import { SpreadsheetActions } from "../actions/spreadsheetActions"
-import { StoreState } from "../types/spreadsheet"
-import { getNumberOfColumns, getNumberOfRows, getSelectedCells } from "../selectors/spreadsheet"
+import { Cell, StoreState } from "../types/spreadsheet"
 
 const mapStateToProps = (state: StoreState) => ({
-  numberOfColumns: getNumberOfColumns(state),
-  numberOfRows: getNumberOfRows(state),
-  selectedCells: getSelectedCells(state),
+  numberOfColumns: state.spreadsheet.numberOfColumns,
+  numberOfRows: state.spreadsheet.numberOfRows,
+  selectedCells: state.spreadsheet.selectedCells,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   buildColumns(numberOfColumns: number) {
     dispatch(SpreadsheetActions.buildColumns(numberOfColumns))
   },
-  deleteMultipleCellsValue(selectedCells: number[]) {
+  deleteMultipleCellsValue(selectedCells: Cell[]) {
     dispatch(SpreadsheetActions.deleteMultipleCellsValue(selectedCells))
   },
 })
